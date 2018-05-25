@@ -10,24 +10,24 @@ public class CompressAlgorithm {
     /**Equ_vertex：对等压缩中保存被压缩掉的节点（超节点）*/
     public static HashMap<Integer, ArrayList<Resource>> Equ_vertex = new HashMap<Integer, ArrayList<Resource>>();
     /**Equ_map:存储内部结构（被压缩掉的图结构）
-     * Vector中下标的含义
+     * ArrayList中下标的含义
      * 0:类型  1（4/7/10/13/16）、 2（5/8/11/14/17）、 3（6/9/12/15/18）：父结点、关系、子节点  */
     public static HashMap<Integer, ArrayList<String>> Equ_map = new HashMap<Integer, ArrayList<String>>();
 
 
     /**Dep_vertex：依赖压缩中保存被压缩掉的节点（超节点）*/
-    public static HashMap<Integer, Vector<Resource>> Dep_vertex = new HashMap<Integer, Vector<Resource>>();
+    //public static HashMap<Integer, ArrayList<Resource>> Dep_vertex = new HashMap<Integer, ArrayList<Resource>>();
     /**Dep_map:存储内部结构（被压缩掉的图结构）
-     * Vector中下标的含义
+     * ArrayList中下标的含义
      *  结点、关系、节点、关系、 节点、....、节点、关系、节点、类型（最后一个节点） */
-    public static HashMap<Integer, Vector<String>> Dep_map = new HashMap<Integer, Vector<String>>();
+    public static HashMap<Integer, ArrayList<String>> Dep_map = new HashMap<Integer, ArrayList<String>>();
 
 
     /**等价压缩原理：类型一样、完全相同的邻居**/
     public static Graph<String, String> EquCompress(Set<Resource> resSet, Graph<String, String>g, Model model){
         /**familySet：聚集图（压缩后的图）*/
         Set<String> familySet = new HashSet<String>();
-        /**Vector family:存储节点的类型及其邻居*/
+        /**ArrayList family:存储节点的类型及其邻居*/
         ArrayList<String> family = null;
         ArrayList<Resource> vertex = null;
         int map_num = 0;
@@ -120,11 +120,11 @@ public class CompressAlgorithm {
             resIt  = resSet.iterator();
             while (resIt.hasNext()){
                 /**vertex保存各个D超实体中的所有节点*/
-                Vector<Resource> vertex = null;
-                vertex = new Vector<Resource>();
+                //ArrayList<Resource> vertex = null;
+                //vertex = new ArrayList<Resource>();
                 /**family保存超实体的内部结构*/
-                Vector<String> family = null;
-                family = new Vector<String>();
+                ArrayList<String> family = null;
+                family = new ArrayList<String>();
 
                 Resource resource = resIt.next();
                 /**先判断图中有没有该节点*/
@@ -172,7 +172,7 @@ public class CompressAlgorithm {
                 /**当此节点满足依赖压缩时：实现多个依赖实体合并为一个超实体，而不是两两合并，以减少超实体的个数
                  * 满足上述的条件：1）此节点的孩子节点有且只有一个；2）此节点的孩子节点的父结点只有一个（自己）*/
                 if (object_count == 1){
-                    vertex.add(resource);
+                    //vertex.add(resource);
                     family.add(resource.toString());
                     g.removeVertex(resource.toString());
                     while (true){
@@ -205,7 +205,7 @@ public class CompressAlgorithm {
                         }
                         /**单链表中可以依赖压缩的所有情况，归纳如下：*/
                         if (count_child == 0 && count_father == 1){
-                            vertex.add(child);
+                            //vertex.add(child);
                             family.add(predicate.toString());
                             family.add(child.toString());
                             family.add(get_type.getType(model, child));
@@ -213,7 +213,7 @@ public class CompressAlgorithm {
                             break;
                         }
                         else if (count_child == 1 && count_father == 1){
-                            vertex.add(child);
+                            //vertex.add(child);
                             family.add(predicate.toString());
                             family.add(child.toString());
                             family.add(get_type.getType(model, child));
@@ -221,15 +221,15 @@ public class CompressAlgorithm {
                             g.removeVertex(child.toString());
                         }
                         else{
-                            vertex.add(child);
+                            //vertex.add(child);
                             family.add(predicate.toString());
                             family.add(child.toString());
                             family.add(get_type.getType(model, child));
                             break;
                         }
                     }
-                    /**将压缩的超实体的所有节点的Resource写入Dep_vertex（MAP）中*/
-                    Dep_vertex.put(map_num, vertex);
+                    /**将压缩的超实体的所有节点和依赖关系写入Dep_map（MAP）中*/
+                    //Dep_vertex.put(map_num, vertex);
                     Dep_map.put(map_num, family);
                     map_num += 1;
                     flag = 1;
